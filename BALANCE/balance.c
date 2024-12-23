@@ -164,6 +164,10 @@ Output  : none
 入口参数：无
 返回  值：无
 **************************************************************************/
+//!STEP01:获取编码器数据，并得到电机实时转速
+//!STEP02:根据APP/Remote/PS2/其他下发的指令进行处理，通过运动学逆解算得到X，Y，Z方向的目标速度
+//!STEP03:通过按键获取陀螺仪和加速度计的静态数据
+//!STEP04:检测电池电压是否正常，根据实时速度和目标速度，计算PID输出值，并输出到电机上
 void Balance_task(void *pvParameters)
 { 
 	  u32 lastWakeTime = getSysTickCnt();
@@ -209,6 +213,8 @@ void Balance_task(void *pvParameters)
            //Speed closed-loop control to calculate the PWM value of each motor, 
 					 //PWM represents the actual wheel speed					 
 					 //速度闭环控制计算各电机PWM值，PWM代表车轮实际转速
+					 //!MOTOR_A.Encoder：实时速度 MOTOR_A.Target：目标转速
+					 //!MOTOR_A.Motor_Pwm：pid输出值
 					 MOTOR_A.Motor_Pwm=Incremental_PI_A(MOTOR_A.Encoder, MOTOR_A.Target);
 					 MOTOR_B.Motor_Pwm=Incremental_PI_B(MOTOR_B.Encoder, MOTOR_B.Target);
 					 MOTOR_C.Motor_Pwm=Incremental_PI_C(MOTOR_C.Encoder, MOTOR_C.Target);
@@ -656,7 +662,7 @@ Output  : none
 入口参数：无
 返回  值：无
 **************************************************************************/
-void Get_Velocity_Form_Encoder(void)//???
+void Get_Velocity_Form_Encoder(void)//10ms读取并更新一次编码器值
 {
 	  //Retrieves the original data of the encoder
 	  //获取编码器的原始数据
@@ -682,6 +688,11 @@ void Get_Velocity_Form_Encoder(void)//???
 		
 		//The encoder converts the raw data to wheel speed in m/s
 		//编码器原始数据转换为车轮速度，单位m/s
+		//!CONTROL_FREQUENCY:每秒进行多少次读取 100：1s内会读取100次
+		//!每次控制周期内，编码器检测到的脉冲数为 Encoder_A_pr
+		//!通过分辨率计算旋转角度 = Encoder_A_pr / Encoder_precision
+		//!转换为旋转距离（即轮子旋转的弧长） = (Encoder_A_pr / Encoder_precision) * Wheel_perimeter
+		//!结合控制频率，得到速度 = 旋转距离 / 控制周期 = 旋转距离 * 控制频率
 		MOTOR_A.Encoder= Encoder_A_pr*CONTROL_FREQUENCY*Wheel_perimeter/Encoder_precision;  
 		MOTOR_B.Encoder= Encoder_B_pr*CONTROL_FREQUENCY*Wheel_perimeter/Encoder_precision;  
 		MOTOR_C.Encoder= Encoder_C_pr*CONTROL_FREQUENCY*Wheel_perimeter/Encoder_precision; 

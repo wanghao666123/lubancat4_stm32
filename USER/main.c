@@ -51,6 +51,7 @@ void start_task(void *pvParameters)
     taskENTER_CRITICAL(); //Enter the critical area //进入临界区
 	
     //Create the task //创建任务
+	//!数值越大表示优先级越高
    	xTaskCreate(Balance_task,  "Balance_task",  BALANCE_STK_SIZE,  NULL, BALANCE_TASK_PRIO,  NULL);	//Vehicle motion control task //小车运动控制任务
 	xTaskCreate(MPU6050_task, "MPU6050_task", MPU6050_STK_SIZE, NULL, MPU6050_TASK_PRIO, NULL);	//IMU data read task //IMU数据读取任务 
     xTaskCreate(show_task,     "show_task",     SHOW_STK_SIZE,     NULL, SHOW_TASK_PRIO,     NULL); //The OLED display displays tasks //OLED显示屏显示任务

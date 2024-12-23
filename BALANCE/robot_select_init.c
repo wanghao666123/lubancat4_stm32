@@ -20,7 +20,7 @@ void Robot_Select(void)
   if(Car_Mode>5)Car_Mode=5;
 
 	//Car_Mode=0;
-	//???
+	//!根据不同车型，配置不同参数 
 	switch(Car_Mode)
 	{
 		case Mec_Car:       Robot_Init(MEC_wheelspacing,         MEC_axlespacing,          0,                     HALL_30F, Photoelectric_500, Mecanum_75);            break; //麦克纳姆轮小车

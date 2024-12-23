@@ -120,9 +120,9 @@ u8 click_N_Double_MPU6050 (u8 time)
 		static	u8 flag_key,count_key,double_key;	
 		static	u16 count_single,Forever_count;
 	
-	  if(KEY==0)  Forever_count++;  
+	  if(KEY==0)  Forever_count++;  //!单次按下
     else        Forever_count=0;
-		if(0==KEY&&0==flag_key)		flag_key=1;	
+		if(0==KEY&&0==flag_key)		flag_key=1;	 //!消抖？
 	  if(0==count_key)
 		{
 				if(flag_key==1) 

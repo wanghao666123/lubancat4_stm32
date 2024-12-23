@@ -104,12 +104,12 @@ long int ErrorCode=0;
 void systemInit(void)
 {       
 	
-//	//Interrupt priority group setti  ng
-//	//中断优先级分组设置
+	//Interrupt priority group setti  ng
+	//中断优先级分组设置
 	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4);
-//	
-//	//Delay function initialization
-//	//延时函数初始化
+	
+	//Delay function initialization
+	//延时函数初始化
 	delay_init(168);	
 	
 	//Initialize the hardware interface connected to the LED lamp
@@ -124,8 +124,8 @@ void systemInit(void)
 	//初始化与使能开关连接的硬件接口
 	Enable_Pin();
 
-  //Initialize the hardware interface connected to the OLED display
-  //初始化与OLED显示屏连接的硬件接口	
+    //Initialize the hardware interface connected to the OLED display
+    //初始化与OLED显示屏连接的硬件接口	
 	OLED_Init();     
 	
 	//Initialize the hardware interface connected to the user's key
@@ -134,7 +134,7 @@ void systemInit(void)
 	
 	//Serial port 1 initialization, communication baud rate 115200, 
 	//can be used to communicate with ROS terminal
-	//串口1初始化，通信波特率115200，可用于与ROS端通信
+	//串口1初始化，通信波特率115200，可用于串口一键下载程序
 	uart1_init(115200);	  
 	
 	//Serial port 2 initialization, communication baud rate 9600, 
