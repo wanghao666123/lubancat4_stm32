@@ -44,14 +44,15 @@ float q0=1.0f,q1=0.0f,q2=0.0f,q3=0.0f;
 //        b = 7;      // error
 //    return b;
 //}
-
+//!STEP01:开机后10s内，读取gyro和acc数据作为静置数据
+//!STEP02:开机10s后，将通过IIC读取得到的gyro和acc数据与之前得到的静置数据相减，作为最后的原始数据输出
 void MPU6050_task(void *pvParameters)
 {
     u32 lastWakeTime = getSysTickCnt();
     while(1)
     {	
 			//This task runs at 100Hz
-			//此任务以100Hz的频率运行
+			//此任务以100Hz的频率运行 10ms
 			vTaskDelayUntil(&lastWakeTime, F2T(RATE_100_HZ));	
 		
 			//Read the gyroscope zero before starting
