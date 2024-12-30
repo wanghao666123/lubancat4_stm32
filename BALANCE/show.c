@@ -14,6 +14,19 @@ Output  : none
 入口参数：无
 返回  值：无
 **************************************************************************/
+//!STEP01:开机后蜂鸣器响一声，响的时间为50 * 10 = 500ms
+//!STEP02:根据实时获取的电池电压，决定蜂鸣器是否蜂鸣，只不过只会触发一次
+//!STEP03:发送数据（左，右轮转速，电池电压，三轴陀螺仪角速度）给APP
+//!STEP04:TANK车
+	//!采集电位器档位信息，获取小车型号
+	//!显示屏第1行显示内容:小车型号
+	//!显示屏第2行显示内容:电机A的目标速度和当前实际速度
+	//!显示屏第3行显示内容:电机B的目标速度和当前实际速度
+	//!显示屏第5行显示内容:履带车显示左右电机的PWM的数值
+	//!显示当前控制模式
+	//!显示当前小车是否允许控制
+	//!显示当前小车的电池电压
+	//!刷新OLED屏幕
 int Buzzer_count=25;
 void show_task(void *pvParameters)
 {
@@ -22,16 +35,17 @@ void show_task(void *pvParameters)
    {	
 		int i=0;
 		static int LowVoltage_1=0, LowVoltage_2=0;
+		//!100ms执行一次
 		vTaskDelayUntil(&lastWakeTime, F2T(RATE_10_HZ));//This task runs at 10Hz //此任务以10Hz的频率运行
 		
 		//开机时蜂鸣器短暂蜂鸣，开机提醒
 		//The buzzer will beep briefly when the machine is switched on
 		if(Time_count<50)Buzzer=1; 
 		else if(Time_count>=51 && Time_count<100)Buzzer=0;
-		 
+		
 		if(LowVoltage_1==1 || LowVoltage_2==1)Buzzer_count=0;
 		if(Buzzer_count<5)Buzzer_count++;
-		if(Buzzer_count<5)Buzzer=1; //The buzzer is buzzing //蜂鸣器蜂鸣
+		if(Buzzer_count<5)Buzzer=1; //The buzzer is buzzing //蜂鸣器蜂鸣500ms
 		else if(Buzzer_count==5)Buzzer=0;
 		
 		//Read the battery voltage //读取电池电压
@@ -47,9 +61,21 @@ void show_task(void *pvParameters)
 		if(Voltage>=12.6f)Voltage=12.6f;
 		else if(10<=Voltage && Voltage<10.5f && LowVoltage_1<2)LowVoltage_1++; //10.5V, first buzzer when low battery //10.5V，低电量时蜂鸣器第一次报警
 		else if(Voltage<10 && LowVoltage_1<2)LowVoltage_2++; //10V, when the car is not allowed to control, the buzzer will alarm the second time //10V，小车禁止控制时蜂鸣器第二次报警
-					
+
+		//!发送数据（左，右轮转速，电池电压，三轴陀螺仪角速度）给APP			
 		APP_Show();	 //Send data to the APP //向APP发送数据
-	  oled_show(); //Tasks are displayed on the screen //显示屏显示任务
+		//!TANK车
+		//!发送数据
+		//!采集电位器档位信息，获取小车型号
+		//!显示屏第1行显示内容:小车型号
+		//!显示屏第2行显示内容:坦克小车显示Z轴角速度
+		//!显示屏第3~4行显示内容:电机A的目标速度和当前实际速度，电机B的目标速度和当前实际速度
+		//!显示屏第5行显示内容:履带车显示左右电机的PWM的数值
+		//!显示当前控制模式
+		//!显示当前小车是否允许控制
+		//!显示当前小车的电池电压
+		//!刷新OLED屏幕
+	    oled_show(); //Tasks are displayed on the screen //显示屏显示任务
    }
 }  
 
@@ -284,13 +310,13 @@ void oled_show(void)
 		 if(EN==1&&Flag_Stop==0)   OLED_ShowString(45,50,"O N");  
 		 else                      OLED_ShowString(45,50,"OFF"); 
 			
-																OLED_ShowNumber(75,50,Voltage_Show/100,2,12);
-			                          OLED_ShowString(88,50,".");
-																OLED_ShowNumber(98,50,Voltage_Show%100,2,12);
-			                          OLED_ShowString(110,50,"V");
+									OLED_ShowNumber(75,50,Voltage_Show/100,2,12);
+			                        OLED_ShowString(88,50,".");
+									OLED_ShowNumber(98,50,Voltage_Show%100,2,12);
+			                        OLED_ShowString(110,50,"V");
 		 if(Voltage_Show%100<10) 	OLED_ShowNumber(92,50,0,2,12);
 		}	
-	 
+	 	//!刷新OLED屏幕
 		OLED_Refresh_Gram();
 }
 /**************************************************************************

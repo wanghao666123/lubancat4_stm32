@@ -61,7 +61,7 @@ void MPU6050_task(void *pvParameters)
 		  {	 
 		  	Deviation_Count++;
 			  memcpy(Deviation_gyro,gyro,sizeof(gyro));		
-				memcpy(Deviation_accel,accel,sizeof(accel));	
+			  memcpy(Deviation_accel,accel,sizeof(accel));	
 		  }		
 
      MPU_Get_Gyroscope(); //得到陀螺仪数据
