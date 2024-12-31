@@ -11,6 +11,8 @@ Output  : none
 入口参数：无
 返回  值：无
 **************************************************************************/
+//!STEP01：对即将要发送的串口数据进行封装
+//!STEP02：通过串口1，3，5还有CAN1将封装好的串口数据发送出去
 void data_task(void *pvParameters)
 {
 	 u32 lastWakeTime = getSysTickCnt();
@@ -18,11 +20,13 @@ void data_task(void *pvParameters)
    while(1)
     {	
 			//The task is run at 20hz
-			//此任务以20Hz的频率运行
+			//此任务以20Hz的频率运行 50ms
 			vTaskDelayUntil(&lastWakeTime, F2T(RATE_20_HZ));
 			//Assign the data to be sent
 			//对要进行发送的数据进行赋值
+			//!对即将要发送的串口数据进行封装
 			data_transition(); 
+			//!通过串口1，3，5还有CAN1将封装好的串口数据发送出去
 			USART1_SEND();     //Serial port 1 sends data //串口1发送数据
 			USART3_SEND();     //Serial port 3 (ROS) sends data  //串口3(ROS)发送数据
 			USART5_SEND();		 //Serial port 5 sends data //串口5发送数据
@@ -76,7 +80,7 @@ void data_transition(void)
 	    Send_Data.Sensor_Str.Y_speed = 0;
 	    Send_Data.Sensor_Str.Z_speed = ((-MOTOR_B.Encoder-MOTOR_A.Encoder+MOTOR_C.Encoder+MOTOR_D.Encoder)/2/(Axle_spacing+Wheel_spacing))*1000;
 		 break; 
-		
+		//!履带车不能直接横向移动（因为是差速驱动），因此 Y 方向速度恒为 0
 		case Tank_Car:   
 			Send_Data.Sensor_Str.X_speed = ((MOTOR_A.Encoder+MOTOR_B.Encoder)/2)*1000; 
 			Send_Data.Sensor_Str.Y_speed = 0;
@@ -106,7 +110,7 @@ void data_transition(void)
 	Send_Data.Sensor_Str.Power_Voltage = Voltage*1000; 
 	
 	Send_Data.buffer[0]=Send_Data.Sensor_Str.Frame_Header; //Frame_heade //帧头
-  Send_Data.buffer[1]=Flag_Stop; //Car software loss marker //小车软件失能标志位
+  	Send_Data.buffer[1]=Flag_Stop; //Car software loss marker //小车软件失能标志位
 	
 	//The three-axis speed of / / car is split into two eight digit Numbers
 	//小车三轴速度,各轴都拆分为两个8位数据再发送

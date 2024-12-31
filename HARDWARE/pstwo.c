@@ -43,7 +43,7 @@ void pstwo_task(void *pvParameters)
     while(1)
     {	
 			//The task is run at 100hz
-			//此任务以100Hz的频率运行 	
+			//此任务以100Hz的频率运行 	10ms
 			vTaskDelayUntil(&lastWakeTime, F2T(RATE_100_HZ));
 			//Read the ps2 data
 			//读取PS2的数据	
