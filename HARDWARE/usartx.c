@@ -531,7 +531,7 @@ int USART1_IRQHandler(void)
 Function: Refresh the OLED screen
 Input   : none
 Output  : none
-函数功能：串口2接收中断
+函数功能：串口2接收中断 蓝牙app
 入口参数：无
 返回  值：无
 **************************************************************************/
